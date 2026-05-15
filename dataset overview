@@ -1,0 +1,10 @@
+| Item            | Description                                                                                                                    |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Data source     | Public job postings from 51job, available at [https://we.51job.com](https://we.51job.com)                                      |
+| Search criteria | Job function category = “Data Analysis” with function code `7501`; work locations = Beijing, Shanghai, Guangzhou, and Shenzhen |
+| Dataset size    | **805** valid job postings and **8** variables                                                                                 |
+| Collection date | 2026-05-12                                                                                                                     |
+| File            | `data/51job_cleaned.csv` (CSV file encoded in UTF-8 with BOM)                                                                  |
+The dataset contains each job posting’s title, detail-page URL, salary information, recruiting company name, company ownership type, company size, scraping timestamp, and the full job description text, which includes job responsibilities and qualification requirements. The full job description text serves as the core corpus for the subsequent NLP analysis, including the extraction of skill terms, AI-related keywords, and descriptions of job functions.
+
+For detailed variable descriptions, please refer to MGS3001 assignment3.md.
