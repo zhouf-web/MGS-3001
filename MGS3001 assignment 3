@@ -1,0 +1,97 @@
+# An Empirical Study on the Impact of AI on Data Analyst Job Functions: Evidence from Beijing, Shanghai, Guangzhou, and Shenzhen
+
+> The Impact of Generative AI on Data Analyst Job Functions: Evidence from China’s First-Tier Cities
+
+**Author:** *Feiyu Zhou*
+**Course:** MSG 3001 WHS01 — Empirical Analysis of the Business, Economic, or Societal Impact of AI
+**Semester:** Spring 2026
+
+---
+
+## 1. Research Question
+
+> **Is the rise of generative AI reshaping the demand structure of data analyst positions in China’s first-tier cities—Beijing, Shanghai, Guangzhou, and Shenzhen—in terms of required skills, job responsibilities, and compensation?**
+
+Does the rise of generative AI reshape the demand structure of data analyst positions—in terms of required skills, job responsibilities, and compensation—in China’s four first-tier cities: Beijing, Shanghai, Guangzhou, and Shenzhen?
+
+## 2. Dataset Description
+
+| Item            | Description                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Data source     | Public job postings from 51job, available at [https://we.51job.com](https://we.51job.com)                                   |
+| Search criteria | Job function category = “Data Analysis” (function code `7501`); work locations = Beijing, Shanghai, Guangzhou, and Shenzhen |
+| Dataset size    | **805** valid job postings and **8** variables                                                                              |
+| Collection date | 2026-05-12                                                                                                                  |
+| File            | `data/51job_cleaned.csv` (CSV file encoded in UTF-8 with BOM)                                                               |
+
+The dataset contains each job posting’s title, detail-page URL, salary information, recruiting company name, company ownership type, company size, scraping timestamp, and, most importantly, the **full job description text** including job responsibilities and qualification requirements. The full job description text will serve as the core corpus for subsequent NLP analysis, including the extraction of skill terms, AI-related keywords, and descriptions of job functions.
+
+For detailed variable descriptions, please refer to [`docs/data_description.md`](docs/data_description.md).
+
+## 3. Repository Structure
+
+```txt
+ai-impact-data-analyst-jobs/
+├── README.md                    ← This file: project overview
+├── data/
+│   └── 51job_cleaned.csv        ← Final cleaned dataset: 805 rows × 8 columns
+├── code/
+│   ├── 01_list_spider.ipynb     ← List-page scraping with Selenium
+│   ├── 02_detail_spider.ipynb   ← Detail-page scraping with undetected-chromedriver and proxy rotation
+│   ├── 03_merge_jobs.py         ← Script for merging list-page and detail-page data
+│   └── 04_clean_jobs.py         ← Data-cleaning script: deduplication, removal of empty columns, and removal of misaligned rows
+└── docs/
+    └── data_description.md      ← Detailed documentation of variables, data-collection methods, and data-quality issues
+```
+
+## 4. Reproduction Instructions
+
+### 4.1 Environment Requirements
+
+* Windows 10/11. The scraping scripts rely on a local Chrome browser. In principle, macOS and Linux are also supported, but file paths need to be adjusted accordingly.
+* Python ≥ 3.9. Python 3.10 is recommended.
+* Google Chrome browser, latest stable version.
+
+### 4.2 Install Dependencies
+
+```bash
+pip install selenium webdriver-manager pandas beautifulsoup4 lxml \
+            undetected-chromedriver requests
+```
+
+If no proxy is used, `undetected-chromedriver` and `requests` can be omitted.
+
+### 4.3 Credentials
+
+* The 51job list-page scraping process does **not** require login credentials or an API key.
+* The detail-page scraping process is configured by default with a **xiongmaodaili proxy API** for IP rotation. The credential is stored in the `PROXY_API_URL` variable in `02_detail_spider.ipynb`. If no proxy is used, `PROXY_API_URL` can be commented out or set to `None` in the relevant cell. In that case, the script will fall back to direct access through the local IP address. This approach is slower and has a higher risk of being blocked, but it can still run successfully.
+
+### 4.4 End-to-End Workflow
+
+1. **List-page scraping:** Open `code/01_list_spider.ipynb`, replace `SEARCH_URL` in cell 2 with the full URL of the target search-result page. By default, the notebook is already configured for “Data Analysis” job postings in Beijing, Shanghai, Guangzhou, and Shenzhen. Run all cells sequentially. The output file is `Desktop/51job_列表采集结果.csv`.
+
+2. **Detail-page scraping:** Open `code/02_detail_spider.ipynb` and run all cells in order. The script reads the list CSV generated in the previous step, visits each detail page, extracts the full job description text, and outputs `Desktop/51job_detail.csv`. The script supports checkpoint-based resumption.
+
+3. **Merging:** In the `code/` directory, run `python 03_merge_jobs.py` to merge the list-page data and detail-page data into `Desktop/51job_merged.csv`.
+
+4. **Cleaning:** Run `python 04_clean_jobs.py` to generate the final cleaned dataset: `data/51job_cleaned.csv`.
+
+5. The paths above point to the `Desktop` or project directory by default and can be modified at the top of each script.
+
+> ⚠️ **Runtime note:** Collecting approximately 850 job-detail pages usually takes about 1.5–2 hours, depending on network speed and the intensity of anti-scraping restrictions. The process can be interrupted at any time using the stop button in Jupyter. Checkpoint information is saved in `51job_detail_done.json`, and the script will automatically resume from the previous stopping point when it is run again.
+
+## 5. Next Steps
+
+1. Extract a skill dictionary from `职位信息_全文`, including terms such as Python, SQL, Tableau, Spark, LLM, Prompt, and RAG.
+2. Construct two measures: “AI exposure” and “AI complementarity,” and compare differences across job postings.
+3. Parse the salary field `sal` and conduct regression analysis to estimate the marginal effect of AI-related skills on salary premiums.
+4. Conduct city-level comparisons to examine whether the penetration rate of AI skills in job descriptions and the associated salary premium differ significantly across Beijing, Shanghai, Guangzhou, and Shenzhen.
+5. Conduct heterogeneity analysis by interacting company ownership type—private-owned, foreign-funded, and state-owned enterprises—with AI-related skills.
+
+## 6. Data Use and Disclaimer
+
+This dataset is intended for academic research purposes only and may not be used for commercial purposes without permission. All job-posting information was publicly available on the 51job website at the time of collection. The scraping process followed the spirit of the website’s `robots.txt` policy and controlled the request frequency to avoid imposing excessive burden on the server. For any copyright or privacy concerns, please contact the author for removal.
+
+---
+
+*Last updated: 2026-05-15*
