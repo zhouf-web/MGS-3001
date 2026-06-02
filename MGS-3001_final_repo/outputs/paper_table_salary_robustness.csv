@@ -1,0 +1,6 @@
+﻿Variable,Model 1: No controls,Model 2: City controls,Model 3: Full controls
+AI skill,0.358***,0.353***,0.318***
+,(0.058),(0.058),(0.057)
+Controls,None,City,"City, company type, company size"
+N,743,743,743
+R-squared,0.052,0.057,0.168

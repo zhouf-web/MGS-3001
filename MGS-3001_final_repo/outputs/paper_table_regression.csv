@@ -1,0 +1,6 @@
+﻿Variable,Model 1: Log salary,Model 2: Traditional skill count
+AI skill,0.318***,0.715***
+,(0.057),(0.127)
+Controls,"City, company type, company size","City, company type, company size"
+N,743,797
+R-squared,0.168,0.105

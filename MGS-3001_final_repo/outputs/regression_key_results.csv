@@ -1,0 +1,3 @@
+﻿model,dependent_variable,key_variable,coef,std_error,p_value,significance,n,r_squared
+Model 1: Salary,Log monthly salary midpoint,ai_skill,0.3183717937976582,0.05680543143803873,2.0873490700065242e-08,***,743,0.16805304191608195
+Model 2: Skill complementarity,Traditional skill count,ai_skill,0.7150569826577018,0.12654654310220592,1.5993958858243876e-08,***,797,0.10546119965685363
